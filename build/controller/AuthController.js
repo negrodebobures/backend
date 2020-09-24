@@ -138,7 +138,9 @@ exports.oauthFacebook = function (req, res, next) { return __awaiter(void 0, voi
                         .cookie("Authorization", refreshToken_1, {
                         path: "/",
                         httpOnly: true,
-                        maxAge: 24 * 60 * 60 * 1000
+                        maxAge: 24 * 60 * 60 * 1000,
+                        sameSite: process.env.NODE_ENV === "production" ? "lax" : "none",
+                        secure: process.env.NODE_ENV === "production" ? true : false,
                     })
                         .status(200)
                         .json({ accessToken: accessToken })];
@@ -201,7 +203,9 @@ exports.oauthGoogle = function (req, res, next) { return __awaiter(void 0, void 
                         .cookie("Authorization", refreshToken_2, {
                         path: "/",
                         httpOnly: true,
-                        maxAge: 24 * 60 * 60 * 1000
+                        maxAge: 24 * 60 * 60 * 1000,
+                        sameSite: process.env.NODE_ENV === "production" ? "lax" : "none",
+                        secure: process.env.NODE_ENV === "production" ? true : false,
                     })
                         .status(200)
                         .json({ accessToken: accessToken })];
@@ -253,7 +257,9 @@ exports.login = function (req, res, next) { return __awaiter(void 0, void 0, voi
                         .cookie("Authorization", refreshToken_3, {
                         path: "/",
                         httpOnly: true,
-                        maxAge: 24 * 60 * 60 * 1000
+                        maxAge: 24 * 60 * 60 * 1000,
+                        sameSite: process.env.NODE_ENV === "production" ? "lax" : "none",
+                        secure: process.env.NODE_ENV === "production" ? true : false,
                     })
                         .status(200)
                         .json({ accessToken: accessToken })];
@@ -365,7 +371,9 @@ exports.logout = function (req, res, next) { return __awaiter(void 0, void 0, vo
                     .cookie("Authorization", "", {
                     path: "/",
                     httpOnly: true,
-                    maxAge: 3600
+                    maxAge: 3600,
+                    sameSite: process.env.NODE_ENV === "production" ? "lax" : "none",
+                    secure: process.env.NODE_ENV === "production" ? true : false,
                 })
                     .status(200)
                     .json({ message: "The user has logout successfully." })];
