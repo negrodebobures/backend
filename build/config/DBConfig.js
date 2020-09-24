@@ -10,11 +10,11 @@ require("reflect-metadata");
 dotenv_1.default.config();
 exports.dbConfig = {
     type: "mysql",
-    host: "bfdo2hscrucdpy5h0qwf-mysql.services.clever-cloud.com",
-    port: 3306,
-    username: "uhugihlulcdpio3u",
-    password: "Dzy64SZPZv4eCeRY2rox",
-    database: "bfdo2hscrucdpy5h0qwf",
+    host: process.env.DB_HOST,
+    port: Number(process.env.DB_PORT),
+    username: process.env.DB_USER,
+    password: process.env.DB_PASS,
+    database: process.env.DB_NAME,
     entities: [User_1.User, Resource_1.Resource],
     synchronize: true,
 };

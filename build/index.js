@@ -54,7 +54,6 @@ var user_routes_1 = __importDefault(require("./routes/user.routes"));
 var auth_routes_1 = __importDefault(require("./routes/auth.routes"));
 var social_routes_1 = __importDefault(require("./routes/social.routes"));
 var resource_routes_1 = __importDefault(require("./routes/resource.routes"));
-var User_1 = require("./entity/User");
 var DBConfig_1 = require("./config/DBConfig");
 var morgan_1 = __importDefault(require("morgan"));
 var cors_1 = __importDefault(require("cors"));
@@ -88,9 +87,7 @@ typeorm_1.createConnection(DBConfig_1.dbConfig)
                         username: "testuser",
                     },
                 ];
-                return [4 /*yield*/, connection.manager.save(User_1.User, usersData)];
-            case 2:
-                _a.sent();
+                // await connection.manager.save(User, usersData);
                 //        await connection.manager.save(Resource, data);
                 // Routes
                 app.use("/api", resource_routes_1.default);
