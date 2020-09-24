@@ -129,7 +129,7 @@ exports.oauthFacebook = function (req, res, next) { return __awaiter(void 0, voi
                     username: user.username,
                 };
                 accessToken = jsonwebtoken_1.default.sign(jwtPayload, process.env.JWT_SECRET, {
-                    expiresIn: "1m",
+                    expiresIn: "45m",
                 });
                 refreshToken_1 = jsonwebtoken_1.default.sign(jwtPayload, process.env.JWT_SECRET, {
                     expiresIn: "48h",
@@ -139,6 +139,8 @@ exports.oauthFacebook = function (req, res, next) { return __awaiter(void 0, voi
                         path: "/",
                         httpOnly: true,
                         maxAge: 24 * 60 * 60 * 1000,
+                        sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+                        secure: process.env.NODE_ENV === "production" ? true : false,
                     })
                         .status(200)
                         .json({ accessToken: accessToken })];
@@ -202,6 +204,8 @@ exports.oauthGoogle = function (req, res, next) { return __awaiter(void 0, void 
                         path: "/",
                         httpOnly: true,
                         maxAge: 24 * 60 * 60 * 1000,
+                        sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+                        secure: process.env.NODE_ENV === "production" ? true : false,
                     })
                         .status(200)
                         .json({ accessToken: accessToken })];
@@ -254,6 +258,8 @@ exports.login = function (req, res, next) { return __awaiter(void 0, void 0, voi
                         path: "/",
                         httpOnly: true,
                         maxAge: 24 * 60 * 60 * 1000,
+                        sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+                        secure: process.env.NODE_ENV === "production" ? true : false,
                     })
                         .status(200)
                         .json({ accessToken: accessToken })];
@@ -366,6 +372,8 @@ exports.logout = function (req, res, next) { return __awaiter(void 0, void 0, vo
                     path: "/",
                     httpOnly: true,
                     maxAge: 3600,
+                    sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+                    secure: process.env.NODE_ENV === "production" ? true : false,
                 })
                     .status(200)
                     .json({ message: "The user has logout successfully." })];
