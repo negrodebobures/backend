@@ -54,6 +54,7 @@ var typeorm_1 = require("typeorm");
 var User_1 = require("../entity/User");
 var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var google_auth_library_1 = require("google-auth-library");
+var twit_1 = __importDefault(require("twit"));
 exports.me = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var authHeader, token, decodedUser_1;
     return __generator(this, function (_a) {
@@ -92,8 +93,84 @@ exports.me = function (req, res, next) { return __awaiter(void 0, void 0, void 0
         return [2 /*return*/];
     });
 }); };
+exports.oauthTwitter = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var _a, access_token_key, access_token_secret, client, twitterData, user, userRepo, registered, userHelper, jwtPayload, accessToken, refreshToken_1, err_1;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                _b.trys.push([0, 5, , 6]);
+                _a = req.body, access_token_key = _a.access_token_key, access_token_secret = _a.access_token_secret;
+                client = new twit_1.default({
+                    consumer_key: process.env.TWITTER_CONSUMER_KEY,
+                    consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
+                    access_token: access_token_key,
+                    access_token_secret: access_token_secret,
+                    timeout_ms: 60 * 1000,
+                });
+                return [4 /*yield*/, client.get("account/verify_credentials", {
+                        skip_status: true,
+                        include_email: true,
+                    })];
+            case 1:
+                twitterData = (_b.sent()).data;
+                user = {
+                    username: twitterData["name"].split(" ").join("") + "-twitter",
+                    email: twitterData["email"],
+                };
+                console.log("user: ", user);
+                userRepo = typeorm_1.getRepository(User_1.User);
+                return [4 /*yield*/, userRepo.findOne({
+                        where: [
+                            {
+                                email: user.email,
+                            },
+                            {
+                                username: user.username,
+                            },
+                        ],
+                    })];
+            case 2:
+                registered = _b.sent();
+                userHelper = void 0;
+                if (!!registered) return [3 /*break*/, 4];
+                console.log("Creating a new user");
+                return [4 /*yield*/, userRepo.save(user)];
+            case 3:
+                userHelper = _b.sent();
+                _b.label = 4;
+            case 4:
+                jwtPayload = {
+                    user_id: registered ? registered.id : userHelper.id,
+                    email: user.email,
+                    username: user.username,
+                };
+                accessToken = jsonwebtoken_1.default.sign(jwtPayload, process.env.JWT_SECRET, {
+                    expiresIn: "45m",
+                });
+                refreshToken_1 = jsonwebtoken_1.default.sign(jwtPayload, process.env.JWT_SECRET, {
+                    expiresIn: "48h",
+                });
+                return [2 /*return*/, res
+                        .cookie("Authorization", refreshToken_1, {
+                        path: "/",
+                        httpOnly: true,
+                        maxAge: 24 * 60 * 60 * 1000,
+                        sameSite: process.env.NODE_ENV === "production" ? "lax" : "none",
+                        secure: process.env.NODE_ENV === "production" ? true : false,
+                    })
+                        .status(200)
+                        .json({ accessToken: accessToken })];
+            case 5:
+                err_1 = _b.sent();
+                console.error(err_1.twitterReply);
+                next(err_1);
+                return [3 /*break*/, 6];
+            case 6: return [2 /*return*/];
+        }
+    });
+}); };
 exports.oauthFacebook = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, name, email, username, user, userRepo, registered, userHelper, jwtPayload, accessToken, refreshToken_1, err_1;
+    var _a, name, email, username, user, userRepo, registered, userHelper, jwtPayload, accessToken, refreshToken_2, err_2;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
@@ -131,11 +208,11 @@ exports.oauthFacebook = function (req, res, next) { return __awaiter(void 0, voi
                 accessToken = jsonwebtoken_1.default.sign(jwtPayload, process.env.JWT_SECRET, {
                     expiresIn: "45m",
                 });
-                refreshToken_1 = jsonwebtoken_1.default.sign(jwtPayload, process.env.JWT_SECRET, {
+                refreshToken_2 = jsonwebtoken_1.default.sign(jwtPayload, process.env.JWT_SECRET, {
                     expiresIn: "48h",
                 });
                 return [2 /*return*/, res
-                        .cookie("Authorization", refreshToken_1, {
+                        .cookie("Authorization", refreshToken_2, {
                         path: "/",
                         httpOnly: true,
                         maxAge: 24 * 60 * 60 * 1000,
@@ -145,15 +222,15 @@ exports.oauthFacebook = function (req, res, next) { return __awaiter(void 0, voi
                         .status(200)
                         .json({ accessToken: accessToken })];
             case 5:
-                err_1 = _b.sent();
-                next(err_1);
+                err_2 = _b.sent();
+                next(err_2);
                 return [3 /*break*/, 6];
             case 6: return [2 /*return*/];
         }
     });
 }); };
 exports.oauthGoogle = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var client, wc, payload, email, name, username, user, userRepo, registered, userHelper, jwtPayload, accessToken, refreshToken_2, err_2;
+    var client, wc, payload, email, name, username, user, userRepo, registered, userHelper, jwtPayload, accessToken, refreshToken_3, err_3;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -196,11 +273,11 @@ exports.oauthGoogle = function (req, res, next) { return __awaiter(void 0, void 
                 accessToken = jsonwebtoken_1.default.sign(jwtPayload, process.env.JWT_SECRET, {
                     expiresIn: "1m",
                 });
-                refreshToken_2 = jsonwebtoken_1.default.sign(jwtPayload, process.env.JWT_SECRET, {
+                refreshToken_3 = jsonwebtoken_1.default.sign(jwtPayload, process.env.JWT_SECRET, {
                     expiresIn: "48h",
                 });
                 return [2 /*return*/, res
-                        .cookie("Authorization", refreshToken_2, {
+                        .cookie("Authorization", refreshToken_3, {
                         path: "/",
                         httpOnly: true,
                         maxAge: 24 * 60 * 60 * 1000,
@@ -210,15 +287,15 @@ exports.oauthGoogle = function (req, res, next) { return __awaiter(void 0, void 
                         .status(200)
                         .json({ accessToken: accessToken })];
             case 6:
-                err_2 = _a.sent();
-                next(err_2);
+                err_3 = _a.sent();
+                next(err_3);
                 return [3 /*break*/, 7];
             case 7: return [2 /*return*/];
         }
     });
 }); };
 exports.login = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, email, password, userRepo, user, payload, accessToken, refreshToken_3, err_3;
+    var _a, email, password, userRepo, user, payload, accessToken, refreshToken_4, err_4;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
@@ -250,11 +327,11 @@ exports.login = function (req, res, next) { return __awaiter(void 0, void 0, voi
                 accessToken = jsonwebtoken_1.default.sign(payload, process.env.JWT_SECRET, {
                     expiresIn: "1m",
                 });
-                refreshToken_3 = jsonwebtoken_1.default.sign(payload, process.env.JWT_SECRET, {
+                refreshToken_4 = jsonwebtoken_1.default.sign(payload, process.env.JWT_SECRET, {
                     expiresIn: "48h",
                 });
                 return [2 /*return*/, res
-                        .cookie("Authorization", refreshToken_3, {
+                        .cookie("Authorization", refreshToken_4, {
                         path: "/",
                         httpOnly: true,
                         maxAge: 24 * 60 * 60 * 1000,
@@ -264,16 +341,16 @@ exports.login = function (req, res, next) { return __awaiter(void 0, void 0, voi
                         .status(200)
                         .json({ accessToken: accessToken })];
             case 3:
-                err_3 = _b.sent();
-                console.error(err_3);
-                next(err_3);
+                err_4 = _b.sent();
+                console.error(err_4);
+                next(err_4);
                 return [3 /*break*/, 4];
             case 4: return [2 /*return*/];
         }
     });
 }); };
 exports.register = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, email, password, username, userRepo, emailUsed, usernameUsed, newUser, err_4;
+    var _a, email, password, username, userRepo, emailUsed, usernameUsed, newUser, err_5;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
@@ -319,9 +396,9 @@ exports.register = function (req, res, next) { return __awaiter(void 0, void 0, 
                 newUser = _b.sent();
                 return [2 /*return*/, res.status(200).json(newUser)];
             case 5:
-                err_4 = _b.sent();
-                console.error(err_4);
-                next(err_4);
+                err_5 = _b.sent();
+                console.error(err_5);
+                next(err_5);
                 return [3 /*break*/, 6];
             case 6: return [2 /*return*/];
         }
@@ -386,7 +463,7 @@ exports.logout = function (req, res, next) { return __awaiter(void 0, void 0, vo
     });
 }); };
 var findByEmail = function (email) { return __awaiter(void 0, void 0, void 0, function () {
-    var userRepo, check, err_5;
+    var userRepo, check, err_6;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -403,14 +480,14 @@ var findByEmail = function (email) { return __awaiter(void 0, void 0, void 0, fu
                 check = _a.sent();
                 return [2 /*return*/, !!check];
             case 3:
-                err_5 = _a.sent();
-                throw err_5;
+                err_6 = _a.sent();
+                throw err_6;
             case 4: return [2 /*return*/];
         }
     });
 }); };
 var findByUsername = function (username) { return __awaiter(void 0, void 0, void 0, function () {
-    var userRepo, check, err_6;
+    var userRepo, check, err_7;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -427,14 +504,14 @@ var findByUsername = function (username) { return __awaiter(void 0, void 0, void
                 check = _a.sent();
                 return [2 /*return*/, !!check];
             case 3:
-                err_6 = _a.sent();
-                throw err_6;
+                err_7 = _a.sent();
+                throw err_7;
             case 4: return [2 /*return*/];
         }
     });
 }); };
 var alreadyRegistered = function (body, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var email, username, emailUsed, usernameUsed, err_7;
+    var email, username, emailUsed, usernameUsed, err_8;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -472,8 +549,8 @@ var alreadyRegistered = function (body, res) { return __awaiter(void 0, void 0, 
                 }
                 return [3 /*break*/, 5];
             case 4:
-                err_7 = _a.sent();
-                throw err_7;
+                err_8 = _a.sent();
+                throw err_8;
             case 5: return [2 /*return*/];
         }
     });
