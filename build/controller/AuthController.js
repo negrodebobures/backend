@@ -234,12 +234,12 @@ exports.oauthGoogle = function (req, res, next) { return __awaiter(void 0, void 
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                client = new google_auth_library_1.OAuth2Client(process.env.CLIENT_ID);
+                client = new google_auth_library_1.OAuth2Client(process.env.GOOGLE_CLIENT_ID);
                 wc = req.body.wc;
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 6, , 7]);
-                return [4 /*yield*/, verifyAndGet(wc.id_token, client, process.env.CLIENT_ID)];
+                return [4 /*yield*/, googleVerifyAndGet(wc.id_token, client)];
             case 2:
                 payload = _a.sent();
                 email = payload.email, name = payload.name;
@@ -305,7 +305,6 @@ exports.login = function (req, res, next) { return __awaiter(void 0, void 0, voi
             case 1:
                 _b.trys.push([1, 3, , 4]);
                 return [4 /*yield*/, userRepo.findOne({
-                        // CHECK FOR PASSWORD IS NOT NULL
                         where: {
                             email: email,
                         },
@@ -405,10 +404,9 @@ exports.register = function (req, res, next) { return __awaiter(void 0, void 0, 
     });
 }); };
 exports.refreshToken = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var cookies, tokenInCookie, accessPayload_1, newPayload, accessToken;
+    var tokenInCookie, accessPayload_1, newPayload, accessToken;
     return __generator(this, function (_a) {
         try {
-            cookies = req.cookies;
             tokenInCookie = req.cookies.Authorization;
             if (!tokenInCookie) {
                 return [2 /*return*/, res.status(400).json({
@@ -555,15 +553,15 @@ var alreadyRegistered = function (body, res) { return __awaiter(void 0, void 0, 
         }
     });
 }); };
-// OAUTH VERIFIERS
-function verifyAndGet(token, client, CLIENT_ID) {
+// OAUTH VERIFIER
+function googleVerifyAndGet(token, client) {
     return __awaiter(this, void 0, void 0, function () {
         var ticket, payload;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, client.verifyIdToken({
                         idToken: token,
-                        audience: CLIENT_ID,
+                        audience: process.env.GOOGLE_CLIENT_ID,
                     })];
                 case 1:
                     ticket = _a.sent();

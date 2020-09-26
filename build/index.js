@@ -60,7 +60,7 @@ var cors_1 = __importDefault(require("cors"));
 var dotenv_1 = __importDefault(require("dotenv"));
 typeorm_1.createConnection(DBConfig_1.dbConfig)
     .then(function (connection) { return __awaiter(void 0, void 0, void 0, function () {
-    var app, usersData;
+    var app;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -75,20 +75,6 @@ typeorm_1.createConnection(DBConfig_1.dbConfig)
                 app.use(cookie_parser_1.default());
                 app.use(morgan_1.default("dev"));
                 app.use(cors_1.default({ origin: process.env.ORIGIN, credentials: true }));
-                usersData = [
-                    {
-                        email: "admin@gmail.com",
-                        password: "secret1",
-                        username: "admin",
-                    },
-                    {
-                        email: "test@gmail.com",
-                        password: "secret2",
-                        username: "testuser",
-                    },
-                ];
-                // await connection.manager.save(User, usersData);
-                //        await connection.manager.save(Resource, data);
                 // Routes
                 app.use("/api", resource_routes_1.default);
                 app.use("/api", user_routes_1.default);
