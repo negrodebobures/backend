@@ -106,6 +106,7 @@ exports.oauthTwitter = function (req, res, next) { return __awaiter(void 0, void
                     access_token: access_token_key,
                     access_token_secret: access_token_secret,
                     timeout_ms: 60 * 1000,
+                    strictSSL: true,
                 });
                 return [4 /*yield*/, client.get("account/verify_credentials", {
                         skip_status: true,
