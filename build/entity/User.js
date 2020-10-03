@@ -26,6 +26,30 @@ var User = /** @class */ (function () {
         __metadata("design:type", String)
     ], User.prototype, "username", void 0);
     __decorate([
+        typeorm_1.Column({ default: "", nullable: true }),
+        __metadata("design:type", String)
+    ], User.prototype, "first_name", void 0);
+    __decorate([
+        typeorm_1.Column({ default: "", nullable: true }),
+        __metadata("design:type", String)
+    ], User.prototype, "last_name", void 0);
+    __decorate([
+        typeorm_1.Column({ default: "", nullable: true }),
+        __metadata("design:type", String)
+    ], User.prototype, "location_country", void 0);
+    __decorate([
+        typeorm_1.Column({ default: "", nullable: true }),
+        __metadata("design:type", String)
+    ], User.prototype, "location_city", void 0);
+    __decorate([
+        typeorm_1.Column({ default: "", nullable: true }),
+        __metadata("design:type", String)
+    ], User.prototype, "website", void 0);
+    __decorate([
+        typeorm_1.Column({ type: "text", nullable: true }),
+        __metadata("design:type", String)
+    ], User.prototype, "bio", void 0);
+    __decorate([
         typeorm_1.Column({ nullable: true }),
         __metadata("design:type", String)
     ], User.prototype, "password", void 0);

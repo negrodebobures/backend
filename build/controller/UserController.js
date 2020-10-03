@@ -35,9 +35,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var typeorm_1 = require("typeorm");
 var User_1 = require("../entity/User");
+var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 exports.getAll = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var userRepo, users;
     return __generator(this, function (_a) {
@@ -57,10 +61,70 @@ exports.getOne = function (req, res, next) { return __awaiter(void 0, void 0, vo
         switch (_a.label) {
             case 0:
                 userRepo = typeorm_1.getRepository(User_1.User);
-                return [4 /*yield*/, userRepo.findOne(req.params.id)];
+                return [4 /*yield*/, userRepo.findOne({
+                        where: {
+                            username: req.params.username,
+                        },
+                    })];
             case 1:
                 users = _a.sent();
                 return [2 /*return*/, res.status(200).json(users)];
+        }
+    });
+}); };
+exports.update = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var userRepo, token, userId_1, _a, username, first_name, last_name, location_country, location_city, website, bio, usernameTaked, results, user, err_1;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                _b.trys.push([0, 4, , 5]);
+                userRepo = typeorm_1.getRepository(User_1.User);
+                token = req.headers.authorization.split(" ")[1];
+                jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET, function (err, decodedToken) {
+                    if (err) {
+                        return res.status(401).json({
+                            message: "The token is invalid or has expired.",
+                        });
+                    }
+                    userId_1 = decodedToken["user_id"];
+                });
+                _a = req.body, username = _a.username, first_name = _a.first_name, last_name = _a.last_name, location_country = _a.location_country, location_city = _a.location_city, website = _a.website, bio = _a.bio;
+                return [4 /*yield*/, userRepo.findOne({
+                        where: {
+                            username: username,
+                        },
+                    })];
+            case 1:
+                usernameTaked = _b.sent();
+                if (!!usernameTaked && usernameTaked.id !== userId_1) {
+                    return [2 /*return*/, res.status(400).json({
+                            errors: {
+                                username: ["user with this username already exists."],
+                            },
+                        })];
+                }
+                return [4 /*yield*/, userRepo.update(userId_1, {
+                        username: username,
+                        first_name: first_name,
+                        last_name: last_name,
+                        location_country: location_country,
+                        location_city: location_city,
+                        website: website,
+                        bio: bio,
+                    })];
+            case 2:
+                results = _b.sent();
+                return [4 /*yield*/, userRepo.findOne(userId_1)];
+            case 3:
+                user = _b.sent();
+                console.log("results: ", user);
+                return [2 /*return*/, res.status(200).json(user)];
+            case 4:
+                err_1 = _b.sent();
+                console.error(err_1);
+                next(err_1);
+                return [3 /*break*/, 5];
+            case 5: return [2 /*return*/];
         }
     });
 }); };
