@@ -54,6 +54,7 @@ var user_routes_1 = __importDefault(require("./routes/user.routes"));
 var auth_routes_1 = __importDefault(require("./routes/auth.routes"));
 var social_routes_1 = __importDefault(require("./routes/social.routes"));
 var resource_routes_1 = __importDefault(require("./routes/resource.routes"));
+var shoutout_routes_1 = __importDefault(require("./routes/shoutout.routes"));
 var DBConfig_1 = require("./config/DBConfig");
 var morgan_1 = __importDefault(require("morgan"));
 var cors_1 = __importDefault(require("cors"));
@@ -80,6 +81,7 @@ typeorm_1.createConnection(DBConfig_1.dbConfig)
                 app.use("/api", user_routes_1.default);
                 app.use("/api", auth_routes_1.default);
                 app.use("/api", social_routes_1.default);
+                app.use("/api", shoutout_routes_1.default);
                 // start express server
                 app.listen(process.env.PORT, function () {
                     console.log("Server running on http://" + process.env.HOST + ":" + process.env.PORT);
