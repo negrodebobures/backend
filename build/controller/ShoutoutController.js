@@ -61,6 +61,7 @@ exports.getAll = function (req, res, next) { return __awaiter(void 0, void 0, vo
                         },
                         take: limitNum,
                         skip: pageNum * limitNum - limitNum,
+                        relations: ['creator']
                     })];
             case 2:
                 shoutouts = _b.sent();
@@ -81,7 +82,9 @@ exports.getOne = function (req, res, next) { return __awaiter(void 0, void 0, vo
             case 0:
                 _a.trys.push([0, 2, , 3]);
                 shoutoutRepo = typeorm_1.getRepository(Shoutout_1.Shoutout);
-                return [4 /*yield*/, shoutoutRepo.findOne(req.params.id)];
+                return [4 /*yield*/, shoutoutRepo.findOne(req.params.id, {
+                        relations: ['creator']
+                    })];
             case 1:
                 shoutout = _a.sent();
                 if (!shoutout) {

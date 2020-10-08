@@ -75,7 +75,7 @@ typeorm_1.createConnection(DBConfig_1.dbConfig)
                 app.use(express_1.urlencoded({ extended: true }));
                 app.use(cookie_parser_1.default());
                 app.use(morgan_1.default("dev"));
-                app.use(cors_1.default({ origin: [process.env.ORIGIN, "http://localhost:3000"], credentials: true }));
+                app.use(cors_1.default({ origin: process.env.ORIGIN, credentials: true }));
                 // Routes
                 app.use("/api", resource_routes_1.default);
                 app.use("/api", user_routes_1.default);
