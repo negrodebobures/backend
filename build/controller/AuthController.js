@@ -347,6 +347,8 @@ exports.login = function (req, res, next) { return __awaiter(void 0, void 0, voi
                         .cookie("Authorization", refreshToken_4, {
                         path: "/",
                         httpOnly: true,
+                        sameSite: "none",
+                        secure: process.env.NODE_ENV === "production" ? true : false,
                         maxAge: 24 * 60 * 60 * 1000,
                     })
                         .status(200)
