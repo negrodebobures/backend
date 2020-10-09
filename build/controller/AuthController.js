@@ -348,7 +348,8 @@ exports.login = function (req, res, next) { return __awaiter(void 0, void 0, voi
                         path: "/",
                         httpOnly: true,
                         sameSite: "none",
-                        secure: true,
+                        domain: process.env.ORIGIN,
+                        secure: process.env.NODE_ENV === "production" ? true : false,
                         maxAge: 24 * 60 * 60 * 1000,
                     })
                         .status(200)
