@@ -338,7 +338,7 @@ exports.login = function (req, res, next) { return __awaiter(void 0, void 0, voi
                 id = user.id, _ = user.password, userData = __rest(user, ["id", "password"]);
                 payload = __assign({ user_id: id }, userData);
                 accessToken = jsonwebtoken_1.default.sign(payload, process.env.JWT_SECRET, {
-                    expiresIn: "1m",
+                    expiresIn: "2m",
                 });
                 refreshToken_4 = jsonwebtoken_1.default.sign(payload, process.env.JWT_SECRET, {
                     expiresIn: "48h",
@@ -348,7 +348,6 @@ exports.login = function (req, res, next) { return __awaiter(void 0, void 0, voi
                         path: "/",
                         httpOnly: true,
                         maxAge: 24 * 60 * 60 * 1000,
-                        sameSite: process.env.NODE_ENV === "production" ? "lax" : "none",
                         secure: process.env.NODE_ENV === "production" ? true : false,
                     })
                         .status(200)
