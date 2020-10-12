@@ -51,6 +51,14 @@ var User = /** @class */ (function () {
         __metadata("design:type", String)
     ], User.prototype, "bio", void 0);
     __decorate([
+        typeorm_1.Column({ default: "", nullable: true }),
+        __metadata("design:type", String)
+    ], User.prototype, "profile_picture", void 0);
+    __decorate([
+        typeorm_1.Column({ default: "", nullable: true }),
+        __metadata("design:type", String)
+    ], User.prototype, "cover_picture", void 0);
+    __decorate([
         typeorm_1.Column({ nullable: true }),
         __metadata("design:type", String)
     ], User.prototype, "password", void 0);

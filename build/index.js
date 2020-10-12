@@ -66,7 +66,7 @@ typeorm_1.createConnection(DBConfig_1.dbConfig)
         switch (_a.label) {
             case 0:
                 dotenv_1.default.config();
-                return [4 /*yield*/, connection.synchronize()];
+                return [4 /*yield*/, connection.synchronize(true)];
             case 1:
                 _a.sent();
                 app = express_1.default();

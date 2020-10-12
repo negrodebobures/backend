@@ -54,41 +54,57 @@ var typeorm_1 = require("typeorm");
 var User_1 = require("../entity/User");
 var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 exports.getAll = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var userRepo, users;
+    var userRepo, users, err_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
+                _a.trys.push([0, 2, , 3]);
                 userRepo = typeorm_1.getRepository(User_1.User);
                 return [4 /*yield*/, userRepo.find()];
             case 1:
                 users = _a.sent();
                 return [2 /*return*/, res.status(200).json(users)];
+            case 2:
+                err_1 = _a.sent();
+                console.error(err_1);
+                next(err_1);
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
         }
     });
 }); };
 exports.getOne = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var userRepo, username, user, password, userPublicData;
+    var userRepo, username, user, password, userPublicData, err_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
+                _a.trys.push([0, 2, , 3]);
                 userRepo = typeorm_1.getRepository(User_1.User);
                 username = req.params.username;
-                return [4 /*yield*/, userRepo.createQueryBuilder("user").where("LOWER(user.username) = LOWER(:username)", { username: username })
+                return [4 /*yield*/, userRepo
+                        .createQueryBuilder("user")
+                        .where("LOWER(user.username) = LOWER(:username)", { username: username })
                         .getOne()];
             case 1:
                 user = _a.sent();
                 if (!user) {
                     return [2 /*return*/, res.status(404).json({
-                            message: "User not found."
+                            message: "User not found.",
                         })];
                 }
                 password = user.password, userPublicData = __rest(user, ["password"]);
                 return [2 /*return*/, res.status(200).json(userPublicData)];
+            case 2:
+                err_2 = _a.sent();
+                console.error(err_2);
+                next(err_2);
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
         }
     });
 }); };
 exports.update = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var userRepo, token, userId_1, _a, username, first_name, last_name, location_country, location_city, website, bio, usernameTaked, results, user, err_1;
+    var userRepo, token, userId_1, _a, username, first_name, last_name, location_country, location_city, profile_picture, cover_picture, website, bio, usernameTaked, results, user, err_3;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
@@ -103,7 +119,7 @@ exports.update = function (req, res, next) { return __awaiter(void 0, void 0, vo
                     }
                     userId_1 = decodedToken["user_id"];
                 });
-                _a = req.body, username = _a.username, first_name = _a.first_name, last_name = _a.last_name, location_country = _a.location_country, location_city = _a.location_city, website = _a.website, bio = _a.bio;
+                _a = req.body, username = _a.username, first_name = _a.first_name, last_name = _a.last_name, location_country = _a.location_country, location_city = _a.location_city, profile_picture = _a.profile_picture, cover_picture = _a.cover_picture, website = _a.website, bio = _a.bio;
                 return [4 /*yield*/, userRepo.findOne({
                         where: {
                             username: username,
@@ -124,6 +140,8 @@ exports.update = function (req, res, next) { return __awaiter(void 0, void 0, vo
                         last_name: last_name,
                         location_country: location_country,
                         location_city: location_city,
+                        profile_picture: profile_picture,
+                        cover_picture: cover_picture,
                         website: website,
                         bio: bio,
                     })];
@@ -132,12 +150,11 @@ exports.update = function (req, res, next) { return __awaiter(void 0, void 0, vo
                 return [4 /*yield*/, userRepo.findOne(userId_1)];
             case 3:
                 user = _b.sent();
-                console.log("results: ", user);
                 return [2 /*return*/, res.status(200).json(user)];
             case 4:
-                err_1 = _b.sent();
-                console.error(err_1);
-                next(err_1);
+                err_3 = _b.sent();
+                console.error(err_3);
+                next(err_3);
                 return [3 /*break*/, 5];
             case 5: return [2 /*return*/];
         }
