@@ -78,13 +78,13 @@ exports.me = function (req, res, next) { return __awaiter(void 0, void 0, void 0
                 authHeader = req.headers.authorization;
                 if (!authHeader) {
                     return [2 /*return*/, res.status(200).json({
-                            isLoggedIn: false,
+                            is_logged_in: false,
                         })];
                 }
                 token = authHeader.split(" ")[1];
                 if (!token) {
                     return [2 /*return*/, res.status(200).json({
-                            isLoggedIn: false,
+                            is_logged_in: false,
                         })];
                 }
                 jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET, function (err, decodedToken) {
@@ -97,13 +97,13 @@ exports.me = function (req, res, next) { return __awaiter(void 0, void 0, void 0
                 });
                 if (!decodedUser_1) {
                     return [2 /*return*/, res.status(200).json({
-                            isLoggedIn: false,
+                            is_logged_in: false,
                         })];
                 }
                 return [4 /*yield*/, userRepo.findOne(decodedUser_1["user_id"])];
             case 2:
                 _a = _b.sent(), password = _a.password, userData = __rest(_a, ["password"]);
-                return [2 /*return*/, res.status(200).json(__assign(__assign({}, userData), { isLoggedIn: true }))];
+                return [2 /*return*/, res.status(200).json(__assign(__assign({}, userData), { is_logged_in: true }))];
             case 3:
                 err_1 = _b.sent();
                 console.error(err_1);
@@ -352,7 +352,7 @@ exports.login = function (req, res, next) { return __awaiter(void 0, void 0, voi
                         maxAge: 24 * 60 * 60 * 1000,
                     })
                         .status(200)
-                        .json({ accessToken: accessToken })];
+                        .json({ tokens: { access: accessToken } })];
             case 3:
                 err_5 = _b.sent();
                 console.error(err_5);
